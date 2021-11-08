@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<jsp:root  xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:jsp="http://java.sun.com/JSP/Page" 
+        xmlns:c="http://java.sun.com/jsp/jstl/core"
+        version="2.0">
+    <jsp:directive.page contentType="text/html" pageEncoding="UTF-8"/>
+
+    <jsp:element name="text">
+        <jsp:attribute name="lang">EN</jsp:attribute>
+        <!-- Displayed when a lesson booking has been finalised -->
+        <jsp:body>
+            <p>You've successfully made a lesson booking!</p>
+            <!-- Directs the user to timetable view -->
+            <p><a href="viewAllLessons">Return to Timetable View</a></p>
+        </jsp:body>
+    </jsp:element>
+</jsp:root>

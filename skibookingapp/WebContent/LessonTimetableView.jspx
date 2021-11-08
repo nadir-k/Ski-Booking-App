@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jsp:root xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsp/jstl/fmt"
+    version="2.0">
+
+    <jsp:directive.page contentType="text/html" pageEncoding="UTF-8"/>
+
+    <!-- any content can be specified here, e.g.: -->
+    <jsp:element name="html">
+        <jsp:attribute name="lang">EN</jsp:attribute>
+        <jsp:body>
+        <jsp:include page="navigation.jspx"/>
+            <h1>This is the Lesson Timetable View</h1>
+            <p>This page shows a list of timetabled lessons </p>
+            <!-- Shows the username of the user logged in -->
+            <p>Hi, <c:out value="${name }"/></p>
+            
+			<!-- This will allow the jsp to access the LessonTimetable Class -->
+            <jsp:useBean class="model.LessonTimetable" id="timetable" scope="page"/>
+            <table border="1">
+                <tr>
+		            <th>Lesson Number</th>
+					<th>Title</th>
+					<th>Level</th>
+					<th>Date</th>
+					<th>Start Time</th>
+					<th>End Time</th>
+					<th colspan="2">Select Lesson</th>
+                </tr>
+                
+                <!-- This for-each loop will iterate over the lessons hashmap in the LessonTimetable -->
+                <c:forEach var="entry" items="${timetable.lessons}">
+                <!-- Directs user to the lesson selection view which shows their current selected lessons -->
+                    <form method="POST" action="addLesson">
+                        <tr>
+                        	<!-- Gets the ID of the lesson -->
+                            <td><c:out value="${entry.key}"/></td>
+                            <!-- Gets the description of the lesson -->
+                            <td><c:out value="${entry.value.description}"/></td>
+                            <!-- Gets the level of the lesson -->
+                            <td><c:out value="${entry.value.level}"/></td>
+                            <!-- Gets the date of the lesson -->
+                            <td><c:out value="${entry.value.date}"/> </td>
+                            <!-- Gets the start time of the lesson -->
+                            <td><c:out value="${entry.value.startTime}"/></td>
+                            <!-- Gets the end time of the lesson -->
+                            <td><c:out value="${entry.value.endTime}"/></td>
+                            
+                            <c:choose>
+                            	<!-- Checks if the lesson exists already in the chosenLesson HashMap -->
+                            	<c:when test="${user.checkLessonExists(entry.value.id) == false}">
+                            		<!-- Changes the select button to selected if so -->
+                            		<style>
+	                            		#selected {
+	                            			text-align: center;
+	                            		}
+                            		</style>
+                            		<td id ="selected">selected</td>
+                            	</c:when>
+                            	<!-- Checks if the number of lessons chosen is equal to 3 -->
+                            	<c:when test = "${user.numChosen eq 3}">
+                            	<!-- 
+                            		Makes remaining lessons selection exceeded to tell the user those lessons weren't selected
+                            		and any more lessons count as exceeded until a lesson is cancelled
+                            	 -->
+                            	    <style>
+	                            		#exceeded {
+	                            			text-align: center;
+	                            		}
+                            		</style>
+                            		<td id ="exceeded">selection exceeded</td>
+                            	</c:when>
+                            	<!-- A lesson can be selected and added to the chosenLesson hashmap -->
+                            	<c:otherwise>
+                            		<td><input type="hidden" name="lessonId" value="${entry.key}"/>
+                            		<input type="submit" value="Choose Lesson"/></td>
+                            	</c:otherwise>
+                            </c:choose>
+                        </tr>
+                    </form>
+                </c:forEach>
+            </table>
+        </jsp:body>
+    </jsp:element>
+</jsp:root>

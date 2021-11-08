@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jsp:root xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:f="http://java.sun.com/jsp/jstl/fmt"
+    version="2.0">
+
+    <jsp:directive.page contentType="text/html" pageEncoding="UTF-8"/>
+
+    <!-- any content can be specified here, e.g.: -->
+    <jsp:element name="html">
+        <jsp:attribute name="lang">EN</jsp:attribute>
+        <jsp:body>
+        <!-- Includes the navbar on the page -->
+        <jsp:include page="navigation.jspx"/>
+            <h1>This is the Lesson Selection View</h1>
+            <p>This page shows the list of selected lessons</p>
+            <!-- Shows the username of the user logged in -->
+            <p>Hi, <c:out value="${name}"/></p>            
+            <table border="1">
+                <tr>
+					<th>Title</th>
+					<th>Level</th>
+					<th>Date</th>
+					<th>Start Time</th>
+					<th>End Time</th>
+					<th>Remove</th>
+                </tr>
+                <!-- A counter to be used for the number of chosen lessons -->
+                <c:set scope="page" var="count" value="0"/>
+                <!-- For each loop to display each selected lesson by the user logged in -->
+                <c:forEach var="entry" items="${user.chosenLessons}">
+                	<!-- This form is used in case the user wants to remove a lesson -->
+                	<form method="DELETE" action="removeLesson">
+                		<tr>
+                			<!-- Gets the description of the selected lesson -->
+                            <td><c:out value="${entry.value.description}"/></td>
+                            <!-- Gets the level of the selected lesson -->
+                            <td><c:out value="${entry.value.level}"/></td>
+                            <!-- Gets the date of the selected lesson -->
+                            <td><c:out value="${entry.value.date}"/></td>
+                            <!-- Gets the start time of the selected lesson -->
+                            <td><c:out value="${entry.value.startTime}"/></td>
+                            <!-- Gets the end time of the selected lesson -->
+                            <td><c:out value="${entry.value.endTime}"/></td>
+                            <!-- Allows the user to submit a booking on a lesson they've selected -->
+                            <td><input type="hidden" name="chosenlessonId" value="${entry.key}"/>
+                            <input type="submit" value="Remove Lesson"/></td>
+                        </tr>
+                	</form>
+                		<!-- Counter incremented depending on the number of selected lessons -->
+                        <c:set var="count" value="${count+1}"/>
+                </c:forEach>
+            </table>
+            <!-- Displays the number of chosen lessons -->
+            <p>Lessons Chosen: <c:out value="${count}"/></p>
+            <c:choose>
+            	<!-- Checks if there are more than 3 lessons or no lessons were selected -->
+            	<c:when test="${count > 3 || count == 0}"> 
+            		<!-- No booking can be finalised -->
+            		<p>You have exceeded the selection of lessons or you've not made any selections.</p>
+            	</c:when>
+            		<!-- Else, a booking can be finalised where a button will show -->
+            	<c:otherwise>
+            		<jsp:include page="footer.jspx"/>
+            	</c:otherwise>
+            </c:choose>
+        </jsp:body>
+    </jsp:element>
+</jsp:root>
